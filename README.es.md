@@ -263,31 +263,39 @@ Para proporcionar una capa adicional de cumplimiento técnico a nuestra estrateg
 El siguiente diagrama ilustra el flujo de trabajo completo.
 ```mermaid
 graph TD
-    subgraph "Fase de Desarrollo"
-        A[Rama Feature] -- "1. PR a dev" --> B(dev);
+    subgraph "Development Phase"
+        A0(Dev Machine) -- "1. Create commit w/ local lint" --> A[Feature Branch];
+        A -- "2. PR to dev" --> B(dev);
     end
 
-    subgraph "Fase de Staging"
-        B -- "2. PR a stg" --> C(stg);
+    subgraph "Staging Phase"
+        B -- "3. PR to stg" --> C(stg);
     end
 
-    subgraph "Fase de Lanzamiento"
-        C -- "3. PR a main" --> D{main};
-        D -- "4. Push activa workflow 'Prepare'" --> E[release-please-prepare];
-        E -- "5. Crea/actualiza" --> F(Release PR);
-        F -- "6. Merge a main" --> D;
-        D -- "7. Push activa workflow 'Finalize'" --> G[release-please-finalize];
-        G -- "8. Crea" --> H[Tags de Git y Releases de GitHub];
+    subgraph "Production & Release Phase"
+        C -- "4. PR to main" --> D{main};
+        D -- "5. Push triggers 'Prepare' workflow" --> E[release-please-prepare];
+        E -- "6. Creates/updates" --> F(Release PR);
+        F -- "7. Merge to main" --> D;
+        D -- "8. Push triggers 'Finalize' workflow" --> G[release-please-finalize];
+        G -- "9. Creates" --> H[Git Tags & GitHub Releases];
     end
 
-    subgraph "Ruta de Hotfix (Emergencia)"
-        D -- "Crear Rama" --> I[hotfix/*];
-        I -- "PR a main" --> D;
+    subgraph "Hotfix Path (Emergency)"
+        D -- "Create Branch" --> I[hotfix/*];
+        I -- "PR to main" --> D;
+    end
+
+    subgraph "Post-Release Sync"
+        H -.-> |"CRITICAL"| Sync1(Merge main back);
+        Sync1 -.-> B;
+        Sync1 -.-> C;
     end
 
     style B fill:#f9f,stroke:#333,stroke-width:2px
     style C fill:#ccf,stroke:#333,stroke-width:2px
     style D fill:#cfc,stroke:#333,stroke-width:4px
+    style Sync1 fill:#fef,stroke:#f00,stroke-width:2px,stroke-dasharray: 5 5
 ```
 
 ### 3.6. Identidad de Automatización y Permisos (Configuración Crítica)

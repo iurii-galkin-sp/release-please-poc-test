@@ -264,20 +264,21 @@ The following diagram illustrates the complete workflow.
 ```mermaid
 graph TD
     subgraph "Development Phase"
-        A[Feature Branch] -- "1. PR to dev" --> B(dev);
+        A0(Dev Machine) -- "1. Create commit w/ local lint" --> A[Feature Branch];
+        A -- "2. PR to dev" --> B(dev);
     end
 
     subgraph "Staging Phase"
-        B -- "2. PR to stg" --> C(stg);
+        B -- "3. PR to stg" --> C(stg);
     end
 
-    subgraph "Release Phase"
-        C -- "3. PR to main" --> D{main};
-        D -- "4. Push triggers 'Prepare' workflow" --> E[release-please-prepare];
-        E -- "5. Creates/updates" --> F(Release PR);
-        F -- "6. Merge to main" --> D;
-        D -- "7. Push triggers 'Finalize' workflow" --> G[release-please-finalize];
-        G -- "8. Creates" --> H[Git Tags & GitHub Releases];
+    subgraph "Production & Release Phase"
+        C -- "4. PR to main" --> D{main};
+        D -- "5. Push triggers 'Prepare' workflow" --> E[release-please-prepare];
+        E -- "6. Creates/updates" --> F(Release PR);
+        F -- "7. Merge to main" --> D;
+        D -- "8. Push triggers 'Finalize' workflow" --> G[release-please-finalize];
+        G -- "9. Creates" --> H[Git Tags & GitHub Releases];
     end
 
     subgraph "Hotfix Path (Emergency)"
@@ -285,9 +286,16 @@ graph TD
         I -- "PR to main" --> D;
     end
 
+    subgraph "Post-Release Sync"
+        H -.-> |"CRITICAL"| Sync1(Merge main back);
+        Sync1 -.-> B;
+        Sync1 -.-> C;
+    end
+
     style B fill:#f9f,stroke:#333,stroke-width:2px
     style C fill:#ccf,stroke:#333,stroke-width:2px
     style D fill:#cfc,stroke:#333,stroke-width:4px
+    style Sync1 fill:#fef,stroke:#f00,stroke-width:2px,stroke-dasharray: 5 5
 ```
 
 ### 3.6. Automation Identity & Permissions (Critical Setup)
