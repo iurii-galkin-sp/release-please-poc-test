@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/iurii-galkin-sp/release-please-poc-test/compare/project-v1.2.0...project-v2.0.0) (2025-10-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* **project:** change action token to gh one
+
+### Features
+
+* **project:** change action token to gh one ([b771dc5](https://github.com/iurii-galkin-sp/release-please-poc-test/commit/b771dc54879a6810ca2c3f1534db69b040a8c07e))
+
 ## [1.2.0](https://github.com/iurii-galkin-sp/release-please-poc-test/compare/project-v1.1.0...project-v1.2.0) (2025-10-03)
 
 
